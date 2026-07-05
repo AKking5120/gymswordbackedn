@@ -31,8 +31,9 @@ const OPTIONAL_VARS = {
 function validateEnv() {
   const missing = REQUIRED_VARS.filter(v => !process.env[v]);
   if (missing.length > 0) {
-    console.error(`Missing required environment variables: ${missing.join(', ')}`);
-    if (process.env.NODE_ENV === 'production') {
+    const msg = `Missing required environment variables: ${missing.join(', ')}`;
+    console.error(msg);
+    if (process.env.NODE_ENV === 'production' && !process.env.VERCEL) {
       process.exit(1);
     }
   }
@@ -42,7 +43,7 @@ function validateEnv() {
     }
     return false;
   });
-  if (warnings.length > 0 && process.env.NODE_ENV === 'production') {
+  if (warnings.length > 0 && process.env.NODE_ENV === 'production' && !process.env.VERCEL) {
     console.error(`Change default values for: ${warnings.join(', ')}`);
     process.exit(1);
   }

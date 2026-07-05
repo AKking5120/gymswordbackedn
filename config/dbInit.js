@@ -59,6 +59,11 @@ async function tryConnect(host) {
 }
 
 async function createSettingsTable() {
+  // Skip on Vercel — settings are managed via migrations/Supabase dashboard
+  if (process.env.VERCEL) {
+    return;
+  }
+
   const regions = [
     'ap-south-1', 'us-east-1', 'us-east-2', 'eu-west-1',
     'eu-west-2', 'eu-central-1', 'ap-southeast-1', 'ap-southeast-2', 'ca-central-1',
@@ -78,7 +83,6 @@ async function createSettingsTable() {
 
   if (!client) {
     console.warn('Could not connect to database for settings table init. Settings will use env defaults until table is created.');
-    console.warn(`Run the SQL from backend/migrations/activity_logs.sql (settings section) in the Supabase SQL Editor.`);
     return;
   }
 

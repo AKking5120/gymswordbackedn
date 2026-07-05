@@ -26,4 +26,7 @@ async function start() {
   });
 }
 
-start();
+// Only start the server when NOT on Vercel (serverless)
+if (!process.env.VERCEL) {
+  start();
+}
