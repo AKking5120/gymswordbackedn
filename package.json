@@ -7,7 +7,7 @@
     "start": "node server.js",
     "dev": "nodemon server.js",
     "build:frontend": "cd ../frontend && npm install --include=dev && npm run build && node -e \"require('fs').cpSync('build','../backend/public',{recursive:true})\"",
-    "postinstall": "node -e \"if(process.env.RENDER||process.env.NODE_ENV==='production'){require('child_process').execSync('npm run build:frontend',{stdio:'inherit',cwd:__dirname})}\""
+    "postinstall": "node -e \"if(!process.env.VERCEL&&(process.env.RENDER||process.env.NODE_ENV==='production')){require('child_process').execSync('npm run build:frontend',{stdio:'inherit',cwd:__dirname})}\""
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.0",
