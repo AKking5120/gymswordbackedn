@@ -1,0 +1,10 @@
+🚀 Server running on port 5000
+📦 Environment: development
+[DEV] Registration OTP for test_1551714159@test.com: 432886
+Email (email_verification) sent to test_1551714159@test.com: <4d0675be-d541-fa0d-f607-5dd2b051dd03@gmail.com>
+[DEV] Registration OTP for test_3331@test.com: 065104
+Email (email_verification) sent to test_3331@test.com: <988c870b-d22d-1fdf-7fd9-d3fffbffd9a8@gmail.com>
+Email (login_notification) sent to test_3331@test.com: <08f2c095-75b7-503c-62ca-e1150e88a008@gmail.com>
+Email (login_notification) sent to admin@gymsword.com: <5b6ea621-738d-0aaf-b2ff-1e110be347c3@gmail.com>
+Email (login_notification) sent to admin@gymsword.com: <6d425aec-bea7-d6b7-a7dc-7ac3af8b3b17@gmail.com>
+Email (login_notification) sent to admin@gymsword.com: <87723353-6240-8619-d69a-11dff66bafa7@gmail.com>

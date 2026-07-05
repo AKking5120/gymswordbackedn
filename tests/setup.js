@@ -1,0 +1,15 @@
+process.env.NODE_ENV = "test";
+process.env.JWT_SECRET = "test-jwt-secret";
+process.env.JWT_REFRESH_SECRET = "test-jwt-refresh-secret";
+process.env.SUPABASE_URL = "https://test.supabase.co";
+process.env.SUPABASE_SERVICE_KEY = "test-service-key";
+process.env.RAZORPAY_KEY = "rzp_test_key";
+process.env.RAZORPAY_SECRET = "razorpay_test_secret";
+process.env.SMTP_HOST = "localhost";
+process.env.SMTP_PORT = "1025";
+process.env.SMTP_SECURE = "false";
+process.env.SMTP_USER = "";
+process.env.SMTP_PASS = "";
+process.env.CLOUDINARY_CLOUD = "test";
+process.env.CLOUDINARY_API_KEY = "test";
+process.env.CLOUDINARY_API_SECRET = "test";
