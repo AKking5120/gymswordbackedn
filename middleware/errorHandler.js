@@ -1,13 +1,3 @@
-const fs = require('fs');
-const path = require('path');
-
-const LOG_DIR = path.join(__dirname, '..', 'logs');
-if (!fs.existsSync(LOG_DIR)) {
-  fs.mkdirSync(LOG_DIR, { recursive: true });
-}
-
-const logStream = fs.createWriteStream(path.join(LOG_DIR, 'error.log'), { flags: 'a' });
-
 class AppError extends Error {
   constructor(message, statusCode = 500, code = 'INTERNAL_ERROR') {
     super(message);
@@ -47,22 +37,17 @@ const errorHandler = (err, req, res, _next) => {
   const statusCode = err.statusCode || 500;
   const code = err.code || 'INTERNAL_ERROR';
 
-  const errorLog = {
-    timestamp: new Date().toISOString(),
-    method: req.method,
-    url: req.originalUrl,
-    ip: req.ip,
-    userId: req.user?.id || null,
-    statusCode,
-    code,
-    message: err.message,
-    stack: process.env.NODE_ENV !== 'production' ? err.stack : undefined,
-  };
-
-  logStream.write(JSON.stringify(errorLog) + '\n');
-
-  if (statusCode === 500 && process.env.NODE_ENV !== 'production') {
-    console.error('ERROR:', err);
+  if (statusCode === 500) {
+    console.error('ERROR:', {
+      timestamp: new Date().toISOString(),
+      method: req.method,
+      url: req.originalUrl,
+      userId: req.user?.id || null,
+      statusCode,
+      code,
+      message: err.message,
+      stack: process.env.NODE_ENV !== 'production' ? err.stack : undefined,
+    });
   }
 
   const response = {

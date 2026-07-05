@@ -129,9 +129,9 @@ const placeOrder = async (req, res) => {
         const addressStr = address ? `${address.full_name}\n${address.address_line1}${address.address_line2 ? ', '+address.address_line2 : ''}\n${address.city} - ${address.pincode}\n${address.state || ''}\nIndia` : '';
         const addressShort = address ? `${address.full_name}, ${address.address_line1}${address.address_line2 ? ', '+address.address_line2 : ''}, ${address.city}, ${address.state} - ${address.pincode}` : '';
 
-        let invoicePath = null;
+        let invoiceBuffer = null;
         try {
-          invoicePath = await generateInvoice({
+          invoiceBuffer = await generateInvoice({
             id: order.id,
             order_number: formatOrderNumber ? formatOrderNumber(order.id) : `GS-${String(order.id).padStart(6, '0')}`,
             total_amount,
@@ -166,7 +166,7 @@ const placeOrder = async (req, res) => {
             billing_address: addressStr,
           },
           itemsForEmail,
-          invoicePath
+          invoiceBuffer
         );
       } catch (emailErr) {
         console.error('Order confirmation email failed:', emailErr.message);
@@ -553,7 +553,7 @@ const getInvoiceDownload = async (req, res) => {
       ? `${addr.full_name}\n${addr.address_line1}${addr.address_line2 ? ', ' + addr.address_line2 : ''}\n${addr.city} - ${addr.pincode}\n${addr.state || ''}\nIndia`
       : '';
 
-    const invoicePath = await generateInvoice({
+    const invoiceBuffer = await generateInvoice({
       id: order.id,
       order_number: `GS-${String(order.id).padStart(6, '0')}`,
       total_amount: order.total_amount,
@@ -572,9 +572,8 @@ const getInvoiceDownload = async (req, res) => {
       payment_status: order.payment_status,
     }, items, { name: order.users.name, email: order.users.email });
 
-    res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename="invoice-${orderNumber}.pdf"`);
-    res.sendFile(invoicePath);
+    res.contentType('application/pdf').send(invoiceBuffer);
   } catch (err) {
     return sendError(res, err.message);
   }

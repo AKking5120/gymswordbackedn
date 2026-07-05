@@ -331,8 +331,15 @@ async function sendLoginOTP(user, otp) {
   await sendMail({ to: user.email, subject: 'GymSword Login Verification Code', html: verificationOTP(user.name, otp), userId: user.id, type: 'login_otp' });
 }
 
-async function sendOrderConfirmation(user, order, items, invoicePath) {
-  const attachments = invoicePath ? [{ filename: `invoice-${order.id}.pdf`, path: invoicePath }] : [];
+async function sendOrderConfirmation(user, order, items, invoiceAttachment) {
+  let attachments = [];
+  if (invoiceAttachment) {
+    if (Buffer.isBuffer(invoiceAttachment)) {
+      attachments = [{ filename: `invoice-${order.id}.pdf`, content: invoiceAttachment }];
+    } else if (typeof invoiceAttachment === 'string') {
+      attachments = [{ filename: `invoice-${order.id}.pdf`, path: invoiceAttachment }];
+    }
+  }
   await sendMail({
     to: user.email,
     subject: `Order Confirmed - #${order.order_number || order.id}`,

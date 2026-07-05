@@ -47,12 +47,11 @@ app.use(requestLogger);
 // Input sanitization
 app.use(sanitizeInput);
 
-// Static files
-app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
-  maxAge: '7d',
-  etag: true,
-  lastModified: true,
-}));
+// Uploads are served from Cloudinary, not local disk
+// Keep route registered but serve from cloudinary URL instead
+app.use('/uploads', (req, res) => {
+  res.redirect(301, `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/v1/gymsword${req.path}`);
+});
 
 // API rate limiting
 app.use('/api/', apiLimiter);
@@ -84,23 +83,27 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Serve frontend in production
+// Serve frontend in production (built by postinstall, served from os.tmpdir on Vercel)
+const fs = require('fs');
 const publicPath = path.join(__dirname, 'public');
-app.use(express.static(publicPath, {
-  maxAge: '1y',
-  etag: true,
-  lastModified: true,
-  setHeaders: (res, p) => {
-    if (p.endsWith('.html')) {
-      res.setHeader('Cache-Control', 'no-cache');
-    }
-  },
-}));
+const publicExists = fs.existsSync(publicPath);
+if (publicExists) {
+  app.use(express.static(publicPath, {
+    maxAge: '1y',
+    etag: true,
+    lastModified: true,
+    setHeaders: (res, p) => {
+      if (p.endsWith('.html')) {
+        res.setHeader('Cache-Control', 'no-cache');
+      }
+    },
+  }));
 
-// SPA fallback for non-API routes
-app.get(/^\/(?!api\/).*/, (req, res) => {
-  res.sendFile(path.join(publicPath, 'index.html'));
-});
+  // SPA fallback for non-API routes
+  app.get(/^\/(?!api\/).*/, (req, res) => {
+    res.sendFile(path.join(publicPath, 'index.html'));
+  });
+}
 
 // 404 handler
 app.use(notFoundHandler);
